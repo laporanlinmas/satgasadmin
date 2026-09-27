@@ -1,0 +1,321 @@
+@import "tailwindcss";
+
+/* ══════════════════════════════════════════════════════════════
+   SI-PEDAS ADMIN — design foundation
+   Semua styling komponen hidup di dalam TSX (Tailwind utilities).
+   File ini HANYA menangani hal yang tidak bisa dimiliki TSX:
+   design tokens, base element, pseudo-element utilities,
+   override third-party (Leaflet), dan dokumen cetak.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Tailwind theme: animasi, radius, font ───────────────────── */
+@theme {
+  --color-navy: #0b0f19;
+  --color-navy2: #111420;
+  --color-navy3: #181e2c;
+  --color-navy-dark: #07090f;
+
+  --color-primary-blue: #6366f1;
+  --color-accent-gold: #20970b;
+
+  --radius-card: 12px;
+  --radius-panel: 8px;
+
+  --font-sans: 'DM Sans', sans-serif;
+  --font-display: 'General Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --animate-shimmer: shimmer 1.5s infinite linear;
+  --animate-sipedas-pulse: sipedasPulse 4s ease-in-out infinite;
+  --animate-pls: pls 1.8s infinite;
+  --animate-toast-in: tIn .3s cubic-bezier(.34,1.56,.64,1) forwards;
+  --animate-toast-out: tOut .2s ease forwards;
+  --animate-modal-in: mIn .26s cubic-bezier(.34,1.28,.64,1) forwards;
+  --animate-bg-move: bgMove 15s ease infinite;
+  --animate-float: float 4s ease-in-out infinite;
+  --animate-dt-dot: dtDot 2.4s infinite;
+  --animate-spin-custom: spin-custom .7s linear infinite;
+  --animate-spin-reverse: spin-reverse .42s linear infinite reverse;
+  --animate-login-card: loginCardEntrance 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-feature-item: featureFadeIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+  @keyframes shimmer {
+    100% { transform: translateX(100%); }
+  }
+  @keyframes sipedasPulse {
+    0%, 100% {  }
+    50% {  }
+  }
+  @keyframes pls {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .2; }
+  }
+  @keyframes tIn {
+    from { opacity: 0; transform: translateX(40px) scale(.85); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes tOut {
+    to { opacity: 0; transform: translateX(20px) scale(.95); }
+  }
+  @keyframes mIn {
+    from { opacity: 0; transform: scale(.94) translateY(7px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes bgMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes dtDot {
+    0%, 100% { background: rgba(30,111,217,.35); transform: scale(1); }
+    50% { background: rgba(80,160,255,.8); transform: scale(1.3); }
+  }
+  @keyframes spin-custom {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes spin-reverse {
+    to { transform: rotate(-360deg); }
+  }
+  @keyframes loginCardEntrance {
+    from {
+      opacity: 0;
+      transform: scale(0.96) translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+  @keyframes featureFadeIn {
+    from {
+      opacity: 0;
+      transform: translateX(-15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
+
+/* ── Alias warna semantik → langsung inlin ke utility (var live),
+      sehingga pergantian dark-mode otomatis tanpa varian dark: ── */
+@theme inline {
+  --color-blue: var(--blue);
+  --color-blue2: var(--blue2);
+  --color-blueh: var(--blueh);
+  --color-bluelo: var(--bluelo);
+  --color-gold: var(--gold);
+  --color-gold2: var(--gold2);
+  --color-green: var(--green);
+  --color-greenl: var(--greenl);
+  --color-red: var(--red);
+  --color-redl: var(--redl);
+  --color-amber: var(--amber);
+  --color-amberl: var(--amberl);
+  --color-purple: var(--purple);
+  --color-purplel: var(--purplel);
+  --color-teal: var(--teal);
+  --color-teall: var(--teall);
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-text: var(--text);
+  --color-mid: var(--mid);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-bdark: var(--bdark);
+}
+
+/* ── Design tokens (mode terang) ─────────────────────────────── */
+:root{
+  /* ── Flip7 Primary Navy Blue ── */
+  --blue:#1b3b6f;
+  --blue2:#3b82f6;
+  --blueh:#12294c;
+  --bluelo:rgba(27,59,111,.12);
+
+  /* ── Flip7 Accent Gold ── */
+  --gold:#FFD23F;
+  --gold2:#FFE47A;
+  --gold-glow:0 0 15px rgba(255,210,63,.4);
+
+  /* ── Semantic Status Colors (Flip7 adapted) ── */
+  --green:#27AE60;--greenl:#edfbf2;--green-glow:0 0 12px rgba(39,174,96,.2);
+  --red:#EF6C4A;--redl:#fff0ec;--red-glow:0 0 12px rgba(239,108,74,.2);
+  --amber:#FFD23F;--amberl:#fffbe6;
+  --purple:#5DADE2;--purplel:#eaf6fd;
+  --teal:#1b3b6f;--teall:#eef2f6;
+
+  /* ── Backgrounds & Text ── */
+  --bg:#f0f4f8;
+  --card:#ffffff;
+  --text:#0f172a;
+  --mid:#475569;
+  --muted:#94a3b8;
+  --border:#e2e8f0;
+  --bdark:#cbd5e1;
+
+  /* ── Glassmorphism & Effects ── */
+  --glass-bg:rgba(255,255,255,.70);
+  --glass-border:rgba(226,232,240,.8);
+  --glass-sh:0 8px 32px rgba(27,59,111,.08);
+
+  /* ── Elevation (Flip7 Navy Glow) ── */
+  --sh0:0 1px 3px rgba(0,0,0,.04);
+  --sh:0 4px 20px rgba(27,59,111,.10);
+  --shl:0 8px 32px rgba(27,59,111,.16);
+  --sh-inner:inset 0 1px 0 rgba(255,255,255,0.8);
+
+  /* ── Layout ── */
+  --r:12px;
+  --sw:240px;--bnav-h:0px;
+  --font:'DM Sans',sans-serif;
+  --font-display:'General Sans',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+
+  /* ── Sidebar (Navy Deep Gradient) ── */
+  --sb-bg: #152238;
+  --sb-bg-dark: #0b111e;
+  --sb-text: rgba(255,255,255,.65);
+  --sb-text-hover: #ffffff;
+  --sb-text-active: #ffffff;
+  --sb-bg-hover: rgba(255,255,255,.10);
+  --sb-bg-active: rgba(255,255,255,.18);
+  --sb-border: rgba(255,255,255,.12);
+  --sb-muted: rgba(255,255,255,.40);
+
+  /* Overlay loading global */
+  --lov-bg: rgba(237,240,247,.93);
+}
+
+/* ── Design tokens (mode gelap) — kelas body.dark-mode di App.tsx ── */
+html.dark-pre body { background: #0f1117 !important; }
+body.dark-mode {
+  color-scheme: dark;
+  --bg: #0b0f19;
+  --card: #181e2c;
+  --text: #f9fafb;
+  --mid: #9ca3af;
+  --muted: #6b7280;
+  --border: rgba(255,255,255,.08);
+  --bdark: rgba(255,255,255,.12);
+  --glass-bg: rgba(24,30,44,.85);
+  --glass-border: rgba(255,255,255,.09);
+  --greenl: rgba(39,174,96,.12);
+  --redl: rgba(239,108,74,.12);
+  --amberl: rgba(255,210,63,.10);
+  --purplel: rgba(93,173,226,.12);
+  --teall: rgba(27,59,111,.12);
+  --blue: #3b82f6;
+  --blue2: #60a5fa;
+  --blueh: #2563eb;
+  --bluelo: rgba(59,130,246,.15);
+
+  /* Sidebar Dark Mode Specifics */
+  --sb-bg: #090e18;
+  --sb-bg-dark: #04060b;
+  --sb-text: rgba(255,255,255,.5);
+  --sb-text-hover: rgba(255,255,255,.95);
+  --sb-text-active: #ffffff;
+  --sb-bg-hover: rgba(255,255,255,.05);
+  --sb-bg-active: rgba(99,102,241,.25);
+  --sb-border: rgba(255,255,255,.08);
+  --sb-muted: rgba(255,255,255,.25);
+
+  --lov-bg: rgba(15,17,23,.93);
+}
+
+/* ── Base element ────────────────────────────────────────────── */
+@layer base {
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden;transition:background-color .3s ease}
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  button,input,textarea{font-family:var(--font);outline:none}
+  button{cursor:pointer;background:none;border:none}
+  a{text-decoration:none;color:inherit}
+
+
+  /* Unified Sleek Scrollbar Styles */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--bdark);
+    border-radius: 99px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--muted);
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--bdark) transparent;
+  }
+}
+
+/* ── Utilities yang butuh pseudo-element (tidak bisa inline) ─── */
+@layer utilities {
+  /* Premium Skeleton Loading Shimmer */
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--border) !important;
+    border-color: transparent !important;
+    color: transparent !important;
+  }
+  .skeleton * {
+    visibility: hidden !important;
+  }
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0.35) 20%,
+      rgba(255,255,255,0.6) 60%,
+      rgba(255,255,255,0) 100%
+    );
+    animation: var(--animate-shimmer);
+  }
+  body.dark-mode .skeleton {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+  }
+  body.dark-mode .skeleton::after {
+    background: linear-gradient(
+      90deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0.03) 20%,
+      rgba(255,255,255,0.08) 60%,
+      rgba(255,255,255,0) 100%
+    );
+  }
+
+  /* Custom scrollbar sidebar (selalu gelap) */
+  .sbnv::-webkit-scrollbar { width: 6px; }
+  .sbnv::-webkit-scrollbar-track { background: transparent; }
+  .sbnv::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 99px;
+    border: 1px solid transparent;
+    background-clip: content-box;
+  }
+  .sbnv::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+  .sbnv { scrollbar-color: rgba(255, 255, 255, 0.15) transparent; }
+}

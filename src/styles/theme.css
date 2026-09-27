@@ -1,0 +1,316 @@
+/* ══════════════════════════════════════════
+   DARK MODE — Variables & Overrides
+   Like SIMADUN style
+   ══════════════════════════════════════════ */
+
+/* Dark mode pre-apply (no flash on load) */
+html.dark-pre body { background: #0f1117 !important; }
+
+/* Dark mode variables */
+body.dark-mode {
+  color-scheme: dark;
+  --bg: #0b0f19;
+  --card: #181e2c;
+  --text: #f9fafb;
+  --mid: #9ca3af;
+  --muted: #6b7280;
+  --border: rgba(255,255,255,.08);
+  --bdark: rgba(255,255,255,.12);
+  --glass-bg: rgba(24,30,44,.85);
+  --glass-border: rgba(255,255,255,.09);
+  --greenl: rgba(39,174,96,.12);
+  --redl: rgba(239,108,74,.12);
+  --amberl: rgba(255,210,63,.10);
+  --purplel: rgba(93,173,226,.12);
+  --teall: rgba(27,59,111,.12);
+  /* Keep navy/blue as primary */
+  --blue: #3b82f6;
+  --blue2: #60a5fa;
+  --blueh: #2563eb;
+  --bluelo: rgba(59,130,246,.15);
+
+  /* Sidebar Dark Mode Specifics */
+  --sb-bg: #090e18;
+  --sb-bg-dark: #04060b;
+  --sb-text: rgba(255,255,255,.5);
+  --sb-text-hover: rgba(255,255,255,.95);
+  --sb-text-active: #ffffff;
+  --sb-bg-hover: rgba(255,255,255,.05);
+  --sb-bg-active: rgba(99,102,241,.25);
+  --sb-border: rgba(255,255,255,.08);
+  --sb-muted: rgba(255,255,255,.25);
+}
+
+
+/* Dark mode — override specific elements */
+
+/* Login dark mode */
+body.dark-mode .login-right {
+  background: #181e2c;
+}
+body.dark-mode .login-form-title { color: #f9fafb; }
+body.dark-mode .login-form-sub { color: #9ca3af; }
+body.dark-mode .login-label { color: #9ca3af; }
+body.dark-mode .login-input {
+  background: rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.1);
+  color: #f9fafb;
+}
+body.dark-mode .login-input::placeholder { color: #6b7280; }
+body.dark-mode .login-input:focus {
+  background: rgba(255,255,255,.08);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59,130,246,.18);
+}
+body.dark-mode .login-input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #181e2c inset !important;
+  -webkit-text-fill-color: #f9fafb !important;
+}
+body.dark-mode .login-checkbox {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.15);
+}
+body.dark-mode .login-remember-text { color: #9ca3af; }
+body.dark-mode .login-pw-toggle { color: #6b7280; }
+body.dark-mode .login-pw-toggle:hover { color: #f9fafb; }
+body.dark-mode .login-copy { color: #6b7280; }
+
+/* Sidebar dark mode: switch to dark teal-navy */
+body.dark-mode .sb {
+  background: #111420;
+  border-right-color: rgba(255,255,255,.07);
+}
+body.dark-mode .sb-header {
+  background: rgba(0,0,0,.3);
+  border-bottom-color: rgba(255,255,255,.07);
+}
+body.dark-mode .sb-nav-btn {
+  color: rgba(255,255,255,.55);
+}
+body.dark-mode .sb-nav-btn:hover {
+  background: var(--bluelo);
+  color: var(--blue2);
+}
+body.dark-mode .sb-nav-btn.active {
+  background: var(--bluelo);
+  color: var(--blue);
+}
+body.dark-mode .sb-nav-btn.active::before {
+  background: var(--blue);
+  
+}
+body.dark-mode .sb-nav-btn.active .sb-nav-icon { color: var(--blue); }
+body.dark-mode .sb-nav-btn:hover .sb-nav-icon { color: var(--blue2); }
+body.dark-mode .sb-section-label { color: rgba(255,255,255,.28); }
+body.dark-mode .sb-footer { border-top-color: rgba(255,255,255,.07); }
+body.dark-mode .sb-logout {
+  background: rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.50);
+}
+body.dark-mode .sb-logout:hover {
+  background: rgba(239,108,74,.2);
+  color: #fff;
+  border-color: rgba(239,108,74,.35);
+}
+body.dark-mode .sb-toggle-btn {
+  background: #1a1f2e;
+  border-color: rgba(255,255,255,.12);
+  color: rgba(255,255,255,.5);
+}
+body.dark-mode .sb-toggle-btn:hover {
+  background: #2BA8A2;
+  color: #fff;
+  border-color: #2BA8A2;
+}
+
+body.dark-mode .panel {
+  background: var(--card);
+  border-color: var(--border);
+}
+
+body.dark-mode .phd {
+  background: rgba(255,255,255,.03);
+  border-bottom-color: var(--border);
+}
+
+
+
+body.dark-mode .mbox {
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+body.dark-mode .mhd {
+  background: var(--card);
+  border-bottom-color: var(--border);
+}
+
+body.dark-mode .mft {
+  background: var(--card);
+  border-top-color: var(--border);
+}
+
+body.dark-mode .ti {
+  background: #1e2230;
+  box-shadow: 0 10px 40px rgba(0,0,0,.4);
+  color: var(--text);
+  border-color: rgba(255,255,255,.05);
+}
+
+body.dark-mode .bg2 {
+  background: rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.09);
+  color: var(--mid);
+}
+
+body.dark-mode .bg2:hover {
+  background: rgba(255,255,255,.09);
+  color: var(--text);
+}
+
+body.dark-mode .chip {
+  filter: brightness(.9);
+}
+
+/* ── Dark mode: table ── */
+body.dark-mode .dtbl thead th {
+  background: #181b27;
+  color: var(--mid);
+  border-bottom-color: var(--border);
+}
+body.dark-mode .dtbl tbody td {
+  border-bottom-color: var(--border);
+  color: var(--text);
+}
+body.dark-mode .dtbl tbody tr:hover td {
+  background: rgba(30,111,217,.07);
+}
+
+/* ── Dark mode: pagination ── */
+body.dark-mode .pbn {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--mid);
+}
+body.dark-mode .pbn:hover {
+  background: var(--bluelo);
+  color: var(--blue2);
+}
+body.dark-mode .pbn.on {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+}
+
+/* ── Dark mode: filter bar ── */
+body.dark-mode .fbar {
+  background: rgba(255,255,255,.025);
+  border-bottom-color: var(--border);
+}
+body.dark-mode .phd {
+  background: rgba(255,255,255,.025);
+  border-bottom-color: var(--border);
+}
+
+/* ── Dark mode: stat cards ── */
+body.dark-mode .scard {
+  background: var(--card);
+  border-color: var(--border);
+}
+body.dark-mode .scard:hover {
+  background: #1e2230;
+  border-color: rgba(255,255,255,.12);
+}
+
+/* ── Dark mode: mcard (mobile card list) ── */
+body.dark-mode .mcard-item {
+  background: var(--card);
+  border-color: var(--border);
+}
+
+/* ── Dark mode: loading overlay ── */
+body.dark-mode #lov {
+  background: rgba(15,17,23,.93);
+}
+
+/* ── Dark mode: toast ── */
+body.dark-mode .ti.ok,
+body.dark-mode .ti.er,
+body.dark-mode .ti.inf {
+  background: #1e2230;
+  color: var(--text);
+}
+
+/* ── Dark mode: topbar ── */
+body.dark-mode .topb {
+  background: rgba(26,29,39,.92);
+  border-color: rgba(255,255,255,.08);
+  box-shadow: 0 4px 20px rgba(0,0,0,.3), 0 1px 4px rgba(0,0,0,.2);
+}
+body.dark-mode .pgtl { color: var(--text); }
+body.dark-mode .pgsb { color: var(--muted); }
+
+
+/* ── Dark mode: satlinmas ag-card ── */
+body.dark-mode .ag-card {
+  background: rgba(255,255,255,.04);
+  border-color: var(--border);
+}
+body.dark-mode .ag-card:hover {
+  background: var(--card);
+  box-shadow: var(--sh);
+}
+
+/* ── Dark mode: set-card ── */
+body.dark-mode .set-card {
+  background: rgba(255,255,255,.04);
+  border-color: var(--border);
+}
+
+/* ── Dark mode: fctl (input/select) ── */
+body.dark-mode .fctl {
+  background: rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.1);
+  color: var(--text);
+}
+body.dark-mode .fctl:focus {
+  background: rgba(255,255,255,.08);
+  border-color: var(--blue2);
+}
+
+/* Dark mode — remove login card override to keep it blue */
+/* .lcard already has it's own background in login.css */
+
+/* Dark mode toggle button */
+.dm-toggle-btn {
+  width: 50px;
+  height: 26px;
+  border-radius: 13px;
+  background: #cbd5e1; /* Default grey in light mode */
+  border: 1.5px solid #94a3b8;
+  position: relative;
+  cursor: pointer;
+  transition: background .22s, border-color .22s;
+  flex-shrink: 0;
+  padding: 0;
+}
+.dm-toggle-btn.on {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+.dm-toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.25);
+  transition: left .22s cubic-bezier(.4,0,.2,1);
+  pointer-events: none;
+}
+.dm-toggle-btn.on .dm-toggle-knob {
+  left: 25px;
+}

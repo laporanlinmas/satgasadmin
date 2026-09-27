@@ -1,0 +1,359 @@
+/* ========================================================
+   SIDEBAR COLLAPSED & FLAT LAYOUT STYLES
+   ======================================================== */
+body.sb-collapsed {
+  --sw: 70px;
+}
+
+/* Hide text and element subtitles when collapsed */
+body.sb-collapsed .sb .sbbr .sb-sipedas,
+body.sb-collapsed .sb .sbbr .sb-subtitle,
+body.sb-collapsed .sb .sbnv .nslbl,
+body.sb-collapsed .sb .sbnv .nb span,
+body.sb-collapsed .sb .sbft .lgout span {
+  display: none !important;
+}
+
+/* Adjust paddings and layout when collapsed */
+body.sb-collapsed .sb .sbbr {
+  padding: 16px 8px;
+}
+
+body.sb-collapsed .sb .sbbr img {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 0;
+  margin-top: 14px;
+}
+
+body.sb-collapsed .sb .sbnv {
+  padding: 8px 4px;
+}
+
+body.sb-collapsed .sb .nb {
+  padding: 11px 0;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+body.sb-collapsed .sb .nb:hover {
+  transform: none; /* Disable shift animation when collapsed */
+}
+
+body.sb-collapsed .sb .sbft {
+  padding: 10px 4px;
+  justify-content: center;
+}
+
+body.sb-collapsed .sb .lgout {
+  padding: 10px 0;
+  justify-content: center;
+  border: none;
+  background: transparent;
+}
+
+body.sb-collapsed .sb .lgout i, body.sb-collapsed .sb .lgout svg {
+  font-size: 1rem;
+}
+
+/* Top Collapse Toggle Button - Floating circular style matching Mesen.Ae */
+#sb-col-btn-top {
+  position: absolute;
+  top: 32px;
+  right: -12px;
+  width: 24px;
+  height: 24px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 50% !important;
+  color: var(--mid);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 210;
+  box-shadow: var(--sh);
+}
+#sb-col-btn-top:hover {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+  transform: scale(1.1);
+}
+#sb-col-btn-top i, #sb-col-btn-top svg {
+  font-size: 0.75rem;
+  width: 12px;
+  height: 12px;
+}
+
+body.sb-collapsed #sb-col-btn-top {
+  position: absolute !important;
+  right: -12px !important;
+  top: 32px !important;
+  width: 24px !important;
+  height: 24px !important;
+  margin: 0 !important;
+}
+
+/* Mobile responsive overrides to keep sidebar drawer full width */
+@media (max-width: 768px) and (orientation: portrait) {
+  body.sb-collapsed {
+    --sw: 240px !important;
+  }
+  body.sb-collapsed .sb .sbbr .sb-sipedas,
+  body.sb-collapsed .sb .sbbr .sb-subtitle,
+  body.sb-collapsed .sb .sbnv .nslbl,
+  body.sb-collapsed .sb .sbnv .nb span,
+  body.sb-collapsed .sb .sbft .lgout span {
+    display: block !important;
+  }
+  body.sb-collapsed .sb .sbbr img {
+    width: 44px;
+    height: 44px;
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+  #sb-col-btn-top {
+    display: none !important;
+  }
+}
+
+/* Custom responsive adjustments for Rekap & Aduan pages */
+.rtbl-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 12px;
+}
+
+/* Print PDF layout side-by-side on desktop */
+.pdf-modal-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 16px;
+  align-items: start;
+}
+
+/* Print PDF Collective layout side-by-side on desktop */
+.pdf-kolektif-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  height: 74vh;
+}
+
+/* Date range inputs container in filter bar */
+.fbar-dates {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 900px) {
+  .pdf-modal-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Sidebar on mobile overrides to stay neat and clean */
+  .pdf-modal-layout {
+    gap: 12px;
+  }
+  /* Preview iframe di mobile — height penuh agar bisa scroll dokumen */
+  .pdf-preview-scroll {
+    height: 380px !important;
+  }
+  .sb {
+    transform: translateX(-100%);
+    opacity: 0;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+  .sb.on {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  /* Make filter bar fields stack neatly on mobile */
+  .fbar {
+    flex-direction: column;
+    align-items: stretch !important;
+    padding: 12px 14px !important;
+    gap: 10px !important;
+  }
+  .fbar > div, .fbar > select, .fbar > input, .fbar > button {
+    width: 100% !important;
+    flex: 1 1 auto !important;
+  }
+  .fsrch {
+    width: 100% !important;
+  }
+  .fbar-dates {
+    width: 100% !important;
+    display: flex !important;
+    gap: 8px !important;
+  }
+  .fbar-dates > div {
+    flex: 1 !important;
+  }
+  .fbar-dates input {
+    width: 100% !important;
+  }
+  .fbar-right {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  .fbar-right button {
+    width: 100% !important;
+  }
+
+  /* Collective PDF layout stack on mobile */
+  .pdf-kolektif-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .pdf-kolektif-layout > div {
+    border-right: none !important;
+    border-bottom: 1px solid var(--border);
+  }
+  .pdf-kolektif-layout iframe {
+    height: 400px !important;
+  }
+
+  /* Reset Toast container bottom alignment since bottom-nav is removed */
+  #tco {
+    bottom: 16px !important;
+  }
+}
+
+/* Force minimum width on data tables inside scrollable wrappers to enable side scrolling */
+.rtbl-wrap .dtbl {
+  min-width: 684px !important;
+}
+
+/* ── txt-clamp: max 3 baris di mcard ── */
+.txt-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: .7rem;
+  color: var(--mid);
+  line-height: 1.5;
+  cursor: pointer;
+  word-break: break-word;
+}
+.txt-clamp.on {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+/* ── Mobile greeting di clock panel ── */
+@media (max-width: 768px) and (orientation: portrait) {
+  /* Tampilkan greeting di mobile (override hidden md) */
+  .dash-greeting-mobile {
+    display: flex !important;
+  }
+  /* Clock panel compact di mobile */
+  .dash-clock-panel {
+    padding: 10px 14px !important;
+    min-height: 58px !important;
+  }
+  .dash-clock-time {
+    font-size: 1.8rem !important;
+  }
+
+  /* Filter bar rekap mobile: reset button inline dengan tanggal, tidak full width */
+  .fbar-reset-mobile {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    align-self: flex-end !important;
+    padding: 9px 12px !important;
+  }
+  /* Baris kedua fbar: tanggal + reset dalam 1 baris */
+  .fbar-dates-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+  .fbar-dates-row .fbar-dates {
+    flex: 1 !important;
+    width: auto !important;
+  }
+
+  /* Modal: pastikan muncul di tengah dan tidak terpotong */
+  .mov {
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 12px 10px !important;
+    overflow-y: auto !important;
+  }
+  .mbox {
+    margin: auto !important;
+    max-height: 88vh !important;
+    width: calc(100vw - 20px) !important;
+  }
+  .mbox.sm {
+    max-width: calc(100vw - 20px) !important;
+  }
+}
+
+/* Inline action icon buttons (rekap table) */
+.iact {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .68rem;
+  cursor: pointer;
+  transition: all .15s;
+  flex-shrink: 0;
+}
+.iact-info  { background: var(--bluelo);   color: var(--blue);   border-color: rgba(30,111,217,.15); }
+.iact-green { background: var(--greenl);   color: var(--green);  border-color: rgba(16,185,129,.15); }
+.iact-amber { background: var(--amberl);   color: var(--amber);  border-color: rgba(245,158,11,.15); }
+.iact-blue  { background: var(--purplel);  color: var(--purple); border-color: rgba(139,92,246,.15); }
+.iact-red   { background: var(--redl);     color: var(--red);    border-color: rgba(239,68,68,.15);  }
+.iact:hover { filter: brightness(.88); transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,.12); }
+body.dark-mode .iact { filter: brightness(.85); }
+body.dark-mode .iact:hover { filter: brightness(1.05); }
+
+/* Action dropdown item styles */
+.dditem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 14px;
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--text);
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background .12s, color .12s;
+  border-radius: 0;
+}
+.dditem:hover {
+  background: var(--bg);
+  color: var(--blue);
+}
+.dditem-danger:hover {
+  background: var(--redl);
+  color: var(--red);
+}
+body.dark-mode .dditem:hover {
+  background: rgba(255,255,255,.06);
+}
+body.dark-mode .dditem-danger:hover {
+  background: rgba(239,68,68,.1);
+  color: var(--red);
+}
