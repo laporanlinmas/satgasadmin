@@ -4,7 +4,7 @@ import { Camera, Layers, EyeOff, Route, Map, Footprints, Shield, HeartPulse, Fla
 export const normalizeKategori = (raw?: string): string => {
   if (!raw) return 'pedestrian';
   const s = raw.toLowerCase().trim();
-  if (s === 'yanma' || s === 'yanmas' || s.includes('yanma') || s.includes('pelayanan')) return 'yanmas';
+  if (s === 'yanmas' || s.includes('yanmas') || s.includes('pelayanan')) return 'yanmas';
   if (s === 'poskamling' || s.includes('kamling')) return 'poskamling';
   if (s === 'posyandu' || s.includes('yandu')) return 'posyandu';
   if (s === 'kebencanaan' || s.includes('bencana')) return 'kebencanaan';

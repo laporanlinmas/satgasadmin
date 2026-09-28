@@ -1,8 +1,10 @@
-import { ClipboardList, UserX, Calendar, AlertTriangle, Users, MessageSquare, MailOpen, Loader2, CheckCircle, Percent, BarChart2, PieChart, LineChart, Clock } from 'lucide-react';
+import { ClipboardList, UserX, Calendar, AlertTriangle, Users, MessageSquare, MailOpen, Loader2, CheckCircle, Percent, BarChart2, PieChart, LineChart, Clock, Trash2 } from 'lucide-react';
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp, useAuth, useTheme } from '../App';
 import { Chart } from 'chart.js/auto';
 import { DashboardSkeleton } from '../components/SkeletonPages';
+import { apiGet } from '../services/api';
+import { KATEGORI_LIST } from '../utils/kategori';
 
 // Firebase imports
 import { initializeApp, getApps, getApp } from 'firebase/app';
@@ -55,6 +57,14 @@ const PANEL = 'max-w-full overflow-hidden rounded-2xl border-[1.5px] border-[var
 const PHD = 'flex flex-wrap items-center justify-between gap-2 border-b-[1.5px] border-[var(--border)] bg-gradient-to-br from-[rgba(27,59,111,.06)] to-transparent px-4 py-3';
 const PTL = 'flex items-center gap-2 font-display text-[.82rem] font-extrabold tracking-[-.01em] text-text';
 const CG2 = 'mb-3 grid grid-cols-[3fr_2fr] gap-3 max-[980px]:grid-cols-1';
+const KATEGORI_COLORS: Record<string, string> = {
+  pedestrian: '#1e6fd9',
+  poskamling: '#b8870a',
+  posyandu: '#e6538c',
+  kebencanaan: '#e45b42',
+  yanmas: '#168a68',
+  lainnya: '#7c3aed',
+};
 
 export const Dashboard: React.FC = () => {
   const { cacheGet, cacheSet, cacheRefresh, refreshTrigger, showLoad, hideLoad } = useApp();
@@ -63,6 +73,7 @@ export const Dashboard: React.FC = () => {
 
   const [data, setData] = useState<DashboardData | null>(null);
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
+  const [sampahCount, setSampahCount] = useState<number | null>(null);
 
   const barChartRef = useRef<HTMLCanvasElement>(null);
   const twChartRef = useRef<HTMLCanvasElement>(null);
@@ -116,6 +127,16 @@ export const Dashboard: React.FC = () => {
 
     fetchData();
   }, [cacheGet, cacheRefresh, refreshTrigger]);
+
+  useEffect(() => {
+    let cancelled = false;
+    apiGet('getSampah').then((res) => {
+      if (!cancelled && res.success && Array.isArray(res.data)) {
+        setSampahCount(res.data.length);
+      }
+    });
+    return () => { cancelled = true; };
+  }, []);
 
   // Listen to Firestore real-time updates for complaints
   useEffect(() => {
@@ -514,6 +535,25 @@ export const Dashboard: React.FC = () => {
   }
 
   const twData = calculateTriwulan(data.allData || []);
+  const reportData = data.allData || [];
+  const totalLaporan = reportData.length || data.total || 0;
+  const totalPelanggaran = reportData.length
+    ? reportData.filter((report: any) => {
+        const identitas = String(report.identitas || '').trim();
+        return identitas !== '' && identitas.toUpperCase() !== 'NIHIL';
+      }).length
+    : data.totalP || 0;
+  const kategoriCounts: Record<string, number> = Object.fromEntries(
+    KATEGORI_LIST.map(({ slug }) => [slug, 0])
+  );
+  reportData.forEach((report: any) => {
+    const rawKategori = String(report.kategori || 'pedestrian').trim().toLowerCase();
+    const kategori = Object.prototype.hasOwnProperty.call(kategoriCounts, rawKategori)
+      ? rawKategori
+      : 'lainnya';
+    kategoriCounts[kategori]++;
+  });
+  const totalKategoriLaporan = Object.values(kategoriCounts).reduce((sum, count) => sum + count, 0);
 
   return (
     <div className="flex flex-col gap-2">
@@ -551,19 +591,26 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* Metrics Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
+      <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 mb-4">
         {/* Total Laporan */}
         <div className={SCARD}>
           <span className={`${SCARD_BAR} ${SCARD_TONE.cb.bar}`} />
           <div className={`${SICO} ${SCARD_TONE.cb.ico}`}><ClipboardList className="w-4 h-4 inline-block align-middle" /></div>
-          <div className={SCARD_TEXT}><div className={SNUM}>{data.total || 0}</div><div className={SLBL}>Total Laporan</div></div>
+          <div className={SCARD_TEXT}><div className={SNUM}>{totalLaporan}</div><div className={SLBL}>Total Laporan</div></div>
+        </div>
+
+        {/* Laporan di Sampah */}
+        <div className={SCARD}>
+          <span className={`${SCARD_BAR} ${SCARD_TONE.ca.bar}`} />
+          <div className={`${SICO} ${SCARD_TONE.ca.ico}`}><Trash2 className="w-4 h-4 inline-block align-middle" /></div>
+          <div className={SCARD_TEXT}><div className={SNUM}>{sampahCount ?? '—'}</div><div className={SLBL}>Laporan di Sampah</div></div>
         </div>
 
         {/* Pelanggaran */}
         <div className={SCARD}>
           <span className={`${SCARD_BAR} ${SCARD_TONE.cr.bar}`} />
           <div className={`${SICO} ${SCARD_TONE.cr.ico}`}><UserX className="w-4 h-4 inline-block align-middle" /></div>
-          <div className={SCARD_TEXT}><div className={SNUM}>{data.totalP || 0}</div><div className={SLBL}>Pelanggaran</div></div>
+          <div className={SCARD_TEXT}><div className={SNUM}>{totalPelanggaran}</div><div className={SLBL}>Pelanggaran</div></div>
         </div>
 
         {/* Bulan Ini */}
@@ -585,6 +632,43 @@ export const Dashboard: React.FC = () => {
           <span className={`${SCARD_BAR} ${SCARD_TONE.cp.bar}`} />
           <div className={`${SICO} ${SCARD_TONE.cp.ico}`}><Users className="w-4 h-4 inline-block align-middle" /></div>
           <div className={SCARD_TEXT}><div className={SNUM}>{data.totalAnggota || 0}</div><div className={SLBL}>Total Anggota</div></div>
+        </div>
+      </div>
+
+      {/* Laporan by category */}
+      <div className={`${PANEL} mb-4`}>
+        <div className={PHD}>
+          <span className={PTL}>
+            <ClipboardList className="w-4 h-4 inline-block align-middle text-blue" /> Laporan per Kategori
+          </span>
+          <span className="font-mono text-[.62rem] font-semibold text-muted">{totalKategoriLaporan} laporan</span>
+        </div>
+        <div className="grid grid-cols-2 gap-x-5 gap-y-4 p-4 sm:grid-cols-3 xl:grid-cols-6">
+          {KATEGORI_LIST.map((kategori) => {
+            const count = kategoriCounts[kategori.slug] || 0;
+            const percentage = totalKategoriLaporan ? (count / totalKategoriLaporan) * 100 : 0;
+            return (
+              <div key={kategori.slug} className="min-w-0">
+                <div className="mb-1.5 flex items-baseline justify-between gap-2">
+                  <span className="truncate text-[.68rem] font-semibold text-mid">{kategori.label}</span>
+                  <span className="shrink-0 font-mono text-[.72rem] font-bold text-text">{count}</span>
+                </div>
+                <div
+                  role="progressbar"
+                  aria-label={`Laporan ${kategori.label}`}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={Math.round(percentage)}
+                  className="h-1.5 overflow-hidden rounded-full bg-bg"
+                >
+                  <div
+                    className="h-full rounded-full transition-[width] duration-500"
+                    style={{ width: `${percentage}%`, backgroundColor: KATEGORI_COLORS[kategori.slug] || '#64748b' }}
+                  />
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 

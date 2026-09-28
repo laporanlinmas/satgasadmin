@@ -95,7 +95,6 @@ export const AppLayout: React.FC = () => {
         return wrap(<RekapLaporan kategori="posyandu" />, <RekapSkeleton />);
       case 'kebencanaan':
         return wrap(<RekapLaporan kategori="kebencanaan" />, <RekapSkeleton />);
-      case 'yanma':
       case 'yanmas':
         return wrap(<RekapLaporan kategori="yanmas" />, <RekapSkeleton />);
       case 'lainnya':

@@ -108,7 +108,7 @@ function buildLegend(opts: any, layersList: any[], allDrawings: any[], photosLis
     photosList.forEach(p => {
       if (p.lat && p.lng) {
         const raw = (p.kategori || 'pedestrian').toLowerCase().trim();
-        const k = (raw === 'yanma' || raw === 'yanmas' || raw.includes('yanma') || raw.includes('pelayanan')) ? 'yanmas'
+        const k = (raw === 'yanmas' || raw.includes('yanmas') || raw.includes('pelayanan')) ? 'yanmas'
           : raw.includes('kamling') ? 'poskamling'
           : raw.includes('yandu') ? 'posyandu'
           : raw.includes('bencana') ? 'kebencanaan'

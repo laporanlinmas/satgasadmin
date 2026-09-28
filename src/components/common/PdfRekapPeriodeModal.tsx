@@ -136,8 +136,8 @@ export const PdfRekapPeriodeModal: React.FC<Props> = ({ show, onClose, allData, 
       if (kategori) {
         if (kategori === 'pedestrian') {
           if (r.kategori && r.kategori !== 'pedestrian') return false;
-        } else if (kategori === 'yanma' || kategori === 'yanmas') {
-          if (r.kategori !== 'yanma' && r.kategori !== 'yanmas') return false;
+        } else if (kategori === 'yanmas') {
+          if (r.kategori !== 'yanmas') return false;
         } else {
           if (r.kategori !== kategori) return false;
         }

@@ -142,7 +142,7 @@ const getTabFromPath = (path: string): string => {
   if (path === '/poskamling') return 'poskamling';
   if (path === '/posyandu') return 'posyandu';
   if (path === '/kebencanaan') return 'kebencanaan';
-  if (path === '/yanma' || path === '/yanmas') return 'yanmas';
+  if (path === '/yanmas') return 'yanmas';
   if (path === '/lainnya') return 'lainnya';
   if (path === '/input') return 'in';
   if (path === '/satlinmas') return 'sl';
@@ -163,7 +163,6 @@ const getPathFromTab = (tab: string): string => {
     case 'poskamling': return '/poskamling';
     case 'posyandu': return '/posyandu';
     case 'kebencanaan': return '/kebencanaan';
-    case 'yanma':
     case 'yanmas': return '/yanmas';
     case 'lainnya': return '/lainnya';
     case 'in': return '/input';
@@ -244,15 +243,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const currentPath = window.location.pathname;
       const validPaths = [
         '/login', '/dashboard', '/rekap',
-        '/pedestrian', '/poskamling', '/posyandu', '/kebencanaan', '/yanma', '/yanmas', '/lainnya',
+        '/pedestrian', '/poskamling', '/posyandu', '/kebencanaan', '/yanmas', '/lainnya',
         '/input', '/satlinmas', '/peta', '/sampah', '/cctv', '/aduan', '/pengaturan', '/survei'
       ];
       if (currentPath === '/rekap') {
         window.history.replaceState(null, '', '/pedestrian');
         setActiveTabState('pedestrian');
-      } else if (currentPath === '/yanma') {
-        window.history.replaceState(null, '', '/yanmas');
-        setActiveTabState('yanmas');
       } else if (!validPaths.includes(currentPath)) {
         window.history.replaceState(null, '', '/dashboard');
         setActiveTabState('db');

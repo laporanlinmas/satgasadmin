@@ -35,7 +35,6 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleMobileSidebar }) => {
         return { title: 'Rekap Posyandu', subtitle: 'Laporan pengamanan & pendampingan posyandu' };
       case 'kebencanaan':
         return { title: 'Rekap Kebencanaan', subtitle: 'Laporan penanganan & kesiapsiagaan bencana' };
-      case 'yanma':
       case 'yanmas':
         return { title: 'Rekap Pelayanan Masyarakat', subtitle: 'Laporan kegiatan pelayanan masyarakat' };
       case 'lainnya':

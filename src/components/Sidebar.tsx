@@ -57,7 +57,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpenMobile, setIsOpenMobile,
   };
 
   const CATEGORY_TABS = ['rk', 'pedestrian', 'poskamling', 'posyandu', 'kebencanaan', 'yanmas', 'lainnya'];
-  const isRekapActive = CATEGORY_TABS.includes(activeTab) || activeTab === 'yanma';
+  const isRekapActive = CATEGORY_TABS.includes(activeTab);
 
   const navKategori = (slug: string) => {
     setActiveTab(slug);
@@ -195,7 +195,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpenMobile, setIsOpenMobile,
                 >
                   {KATEGORI_LIST.map((item) => {
                     const KatIcon = KAT_ICONS[item.icon] ?? FileText;
-                    const isActive = activeTab === item.slug || (item.slug === 'yanmas' && activeTab === 'yanma') || (item.slug === 'pedestrian' && activeTab === 'rk');
+                    const isActive = activeTab === item.slug || (item.slug === 'pedestrian' && activeTab === 'rk');
                     return (
                       <button
                         key={item.slug}

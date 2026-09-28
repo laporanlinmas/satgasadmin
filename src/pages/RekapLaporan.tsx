@@ -29,6 +29,13 @@ const kategoriLabel = (k?: string): string => {
   return KATEGORI_LABEL[k] || k.charAt(0).toUpperCase() + k.slice(1);
 };
 
+const judulLaporanDefault = (kategori?: string): string => {
+  if (!kategori || kategori === 'pedestrian') {
+    return 'LAPORAN KEGIATAN MONITORING DAN PENGAMANAN AREA PEDESTRIAN KABUPATEN PONOROGO';
+  }
+  return `LAPORAN KEGIATAN ${kategoriLabel(kategori).toUpperCase()} KABUPATEN PONOROGO`;
+};
+
 // Common Modals
 import { EditLaporanModal } from '../components/common/EditLaporanModal';
 import { ConfirmModal } from '../components/common/ConfirmModal';
@@ -442,9 +449,6 @@ export const RekapLaporan: React.FC<RekapLaporanProps> = ({ kategori }) => {
       if (currentCategory === 'pedestrian') {
         return !r.kategori || r.kategori === 'pedestrian';
       }
-      if (currentCategory === 'yanma' || currentCategory === 'yanmas') {
-        return rowKat === 'yanma' || rowKat === 'yanmas';
-      }
       return rowKat === currentCategory;
     });
 
@@ -636,10 +640,9 @@ export const RekapLaporan: React.FC<RekapLaporanProps> = ({ kategori }) => {
 
       const rowKat = row.kategori || currentCategory;
       const isRowPedestrian = !rowKat || rowKat === 'pedestrian';
-      const defaultJudul = !isRowPedestrian
-        ? `LAPORAN KEGIATAN ${kategoriLabel(rowKat).toUpperCase()} KABUPATEN PONOROGO`
-        : 'LAPORAN KEGIATAN MONITORING DAN PENGAMANAN AREA PEDESTRIAN KABUPATEN PONOROGO';
-      setPdfJudul(settings.pdf_judul || defaultJudul);
+      const defaultJudul = judulLaporanDefault(rowKat);
+      const judulAwal = isRowPedestrian ? (settings.pdf_judul || defaultJudul) : defaultJudul;
+      setPdfJudul(judulAwal);
 
       setShowPdfTtdBox(false);
       setShowPdfModal(true);
@@ -656,7 +659,7 @@ export const RekapLaporan: React.FC<RekapLaporanProps> = ({ kategori }) => {
       generatePdfPreview(
         row,
         {
-          pdf_judul:   settings.pdf_judul   || 'LAPORAN KEGIATAN MONITORING DAN PENGAMANAN AREA PEDESTRIAN KABUPATEN PONOROGO',
+          pdf_judul:   judulAwal,
           pdf_tujuan:  settings.pdf_tujuan  || 'Melaksanakan Monitoring Dan Pengamanan Area Wisata Pedestrian',
           pdf_anggota: settings.pdf_anggota || 'Regu Pedestrian, Anggota Bidang Linmas, Satpol PP',
           pdf_pukul:   settings.pdf_pukul   || '16.00 – 00.00 WIB',
@@ -903,10 +906,7 @@ export const RekapLaporan: React.FC<RekapLaporanProps> = ({ kategori }) => {
       const uraian    = overrides?.uraian    ?? row.keterangan ?? '';
 
       const rowKat = row.kategori || currentCategory;
-      const isRowPedestrian = !rowKat || rowKat === 'pedestrian';
-      const defaultJudul = !isRowPedestrian
-        ? `LAPORAN KEGIATAN ${kategoriLabel(rowKat).toUpperCase()} KABUPATEN PONOROGO`
-        : 'LAPORAN KEGIATAN MONITORING DAN PENGAMANAN AREA PEDESTRIAN KABUPATEN PONOROGO';
+      const defaultJudul = judulLaporanDefault(rowKat);
 
       const res = await apiPost('generateLaporanHtml', {
         kategori: rowKat,
@@ -973,7 +973,7 @@ export const RekapLaporan: React.FC<RekapLaporanProps> = ({ kategori }) => {
     generatePdfPreview(
       pdfLaporan,
       {
-        pdf_judul:    pdfJudul || 'LAPORAN KEGIATAN MONITORING DAN PENGAMANAN AREA PEDESTRIAN KABUPATEN PONOROGO',
+        pdf_judul:    pdfJudul || judulLaporanDefault(pdfLaporan.kategori || currentCategory),
         pdf_tujuan:   pdfTujuan,
         pdf_anggota:  pdfAnggota,
         pdf_pukul:    pdfPukul,
