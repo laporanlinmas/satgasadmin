@@ -21,6 +21,8 @@ import { PetaSkeleton } from '../components/SkeletonPages';
 
 declare const window: any;
 
+let leafletLoadPromise: Promise<void> | null = null;
+
 interface PtkSimbol {
   id: string;
   ico: string;
@@ -78,6 +80,9 @@ export const PetaPedestrian: React.FC = () => {
   const { isAdmin } = useAuth();
 
   const [isInitialFetching, setIsInitialFetching] = useState(true);
+  const [mapLoadError, setMapLoadError] = useState<string | null>(null);
+  const [mapLoadAttempt, setMapLoadAttempt] = useState(0);
+  const [isMapReady, setIsMapReady] = useState(false);
   const [targetLocation, setTargetLocation] = useState<{ lat: number; lng: number } | null>(null);
 
   // Baca parameter lokasi dari URL (lat & lng) — untuk "Buka di Peta" dari detail laporan
@@ -139,7 +144,6 @@ export const PetaPedestrian: React.FC = () => {
   // UI state
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [petaTitle, setPetaTitle] = useState('PETA SATGAS KABUPATEN PONOROGO');
-  const [isMapReady, setIsMapReady] = useState(false);
 
   // Leaflet references
   const mapRef = useRef<any>(null);
@@ -348,6 +352,7 @@ export const PetaPedestrian: React.FC = () => {
   // Ensure Leaflet is loaded
   const _ensureLeafletLoaded = (cb: () => void) => {
     if (window.L && window.L.Draw) {
+      setMapLoadError(null);
       cb();
       return;
     }
@@ -360,23 +365,53 @@ export const PetaPedestrian: React.FC = () => {
       document.head.appendChild(l);
     };
 
-    const injectScript = (src: string, onLoad: () => void) => {
-      const e = document.createElement('script');
-      e.src = src;
-      e.onload = onLoad;
-      document.head.appendChild(e);
+    const loadScript = (src: string, id: string) => new Promise<void>((resolve, reject) => {
+      const script = document.createElement('script');
+      const timeout = window.setTimeout(() => {
+        script.remove();
+        reject(new Error(`Timeout memuat ${id}`));
+      }, 15000);
+      script.id = id;
+      script.src = src;
+      script.onload = () => {
+        window.clearTimeout(timeout);
+        resolve();
+      };
+      script.onerror = () => {
+        window.clearTimeout(timeout);
+        script.remove();
+        reject(new Error(`Gagal memuat ${id}`));
+      };
+      document.head.appendChild(script);
+    });
+
+    if (!leafletLoadPromise) {
+      leafletLoadPromise = (async () => {
+        if (!window.L) {
+          await loadScript('https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js', 'lf-script');
+        }
+        if (!window.L) throw new Error('Leaflet tidak tersedia');
+        if (!window.L.Draw) {
+          await loadScript('https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js', 'lf-draw-script');
+        }
+        if (!window.L.Draw) throw new Error('Leaflet Draw tidak tersedia');
+      })().catch((error) => {
+        leafletLoadPromise = null;
+        throw error;
+      });
     };
 
     injectStyle('https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css', 'lf-css');
     injectStyle('https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css', 'lf-draw-css');
-
-    if (!window.L) {
-      injectScript('https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js', () => {
-        injectScript('https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js', cb);
+    leafletLoadPromise
+      .then(() => {
+        setMapLoadError(null);
+        cb();
+      })
+      .catch((error) => {
+        console.error('[Peta] Gagal memuat Leaflet:', error);
+        setMapLoadError('Peta gagal dimuat. Periksa koneksi internet lalu coba lagi.');
       });
-    } else {
-      injectScript('https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js', cb);
-    }
   };
 
 
@@ -465,8 +500,10 @@ export const PetaPedestrian: React.FC = () => {
   // Init leaflet instance on render
   useEffect(() => {
     if (isInitialFetching) return;
+    let cancelled = false;
 
     _ensureLeafletLoaded(() => {
+      if (cancelled) return;
       // Create map container
       const L = window.L;
       if (!L) return;
@@ -663,6 +700,7 @@ export const PetaPedestrian: React.FC = () => {
     });
 
     return () => {
+      cancelled = true;
       setIsMapReady(false);
       if (mapRef.current) {
         try {
@@ -684,7 +722,7 @@ export const PetaPedestrian: React.FC = () => {
       activeDrawHandlerRef.current = null;
       currentBaseLayerRef.current = null;
     };
-  }, [isInitialFetching]);
+  }, [isInitialFetching, mapLoadAttempt]);
 
   // Draw Map Overlays
   useEffect(() => {
@@ -1781,8 +1819,27 @@ export const PetaPedestrian: React.FC = () => {
           <div id="lf-map-div" className="relative h-full w-full bg-bg">
             {!isMapReady && (
               <div className="absolute inset-0 z-[1000] flex flex-col items-center justify-center bg-card text-muted">
-                <Loader2 className="mx-auto mb-3 w-8 h-8 animate-spin text-blue" />
-                <span className="text-[.85rem] font-semibold">Menyiapkan Peta Satgas...</span>
+                {mapLoadError ? (
+                  <>
+                    <Map className="mx-auto mb-3 h-8 w-8 text-red" />
+                    <span className="text-center text-[.85rem] font-semibold">{mapLoadError}</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMapLoadError(null);
+                        setMapLoadAttempt((attempt) => attempt + 1);
+                      }}
+                      className="mt-3 inline-flex items-center gap-2 rounded-md bg-blue px-3 py-2 text-[.75rem] font-bold text-white hover:bg-blueh"
+                    >
+                      <RefreshCw className="h-3.5 w-3.5" /> Coba Lagi
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Loader2 className="mx-auto mb-3 w-8 h-8 animate-spin text-blue" />
+                    <span className="text-[.85rem] font-semibold">Menyiapkan Peta Satgas...</span>
+                  </>
+                )}
               </div>
             )}
           </div>

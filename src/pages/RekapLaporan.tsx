@@ -251,6 +251,7 @@ export const RekapLaporan: React.FC<RekapLaporanProps> = ({ kategori }) => {
     hideLoad,
     triggerToast,
     openGallery,
+    setActiveTab,
   } = useApp();
   const { isAdmin } = useAuth();
   const { isDarkMode } = useTheme();

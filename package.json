@@ -1,6 +1,6 @@
 {
   "name": "sipedas-admin",
-  "version": "1.0.0",
+  "version": "5.0.0",
   "description": "Dashboard Monitoring SI-PEDAS Admin Backend",
   "scripts": {
     "dev": "vite",
