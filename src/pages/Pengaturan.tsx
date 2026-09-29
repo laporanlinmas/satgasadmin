@@ -7,6 +7,7 @@ import { ConfirmModal } from '../components/common/ConfirmModal';
 import { AlertModal } from '../components/common/AlertModal';
 import { Modal } from '../components/common/Modal';
 import { WaPiket } from '../types';
+import { categoryPdfSettingKey, getCategoryPdfSettings, KATEGORI_LIST } from '../utils/kategori';
 
 /* ── Tailwind class mappings ── */
 const PANEL_BASE = 'max-w-full overflow-hidden rounded-2xl border-[1.5px] border-border bg-card shadow-[var(--sh)] transition-all hover:shadow-[var(--shl)] min-[769px]:overflow-x-auto max-md:landscape:overflow-x-auto';
@@ -128,6 +129,8 @@ export const Pengaturan: React.FC = () => {
   const [pdfNama, setPdfNama] = useState('');
   const [pdfPangkat, setPdfPangkat] = useState('');
   const [pdfNip, setPdfNip] = useState('');
+  const [pdfSettingsCategory, setPdfSettingsCategory] = useState('pedestrian');
+  const [pdfCategorySettings, setPdfCategorySettings] = useState<Record<string, string>>({});
   const [pdfSinglePreviewHtml, setPdfSinglePreviewHtml] = useState('');
 
   // PDF Kolektif form states
@@ -162,6 +165,23 @@ export const Pengaturan: React.FC = () => {
   // Timers for live previews debouncing
   const pdfPreviewTimer = useRef<any>(null);
   const kolPreviewTimer = useRef<any>(null);
+
+  const applyPdfCategorySettings = (category: string, settings: Record<string, string | undefined>) => {
+    const values = getCategoryPdfSettings(settings, category);
+    setPdfJudul(values.judul);
+    setPdfTujuan(values.tujuan);
+    setPdfAnggota(values.anggota);
+    setPdfPukul(values.pukul);
+    setPdfJabatan(values.jabatan);
+    setPdfNama(values.nama);
+    setPdfPangkat(values.pangkat);
+    setPdfNip(values.nip);
+  };
+
+  const handlePdfCategoryChange = (category: string) => {
+    setPdfSettingsCategory(category);
+    applyPdfCategorySettings(category, pdfCategorySettings);
+  };
 
   // Accordion Toggle
   const togglePanel = (panelKey: string) => {
@@ -211,14 +231,8 @@ export const Pengaturan: React.FC = () => {
         const res = await apiGet('getSettings');
         if (res.success) {
           const d = res.data || {};
-          setPdfJudul(d.pdf_judul || 'LAPORAN KEGIATAN MONITORING DAN PENGAMANAN AREA PEDESTRIAN KABUPATEN PONOROGO');
-          setPdfTujuan(d.pdf_tujuan || 'Melaksanakan Monitoring Dan Pengamanan Area Wisata Pedestrian');
-          setPdfAnggota(d.pdf_anggota || 'Regu Pedestrian, Anggota Bidang Linmas, Satpol PP');
-          setPdfPukul(d.pdf_pukul || '16.00 – 00.00 WIB');
-          setPdfJabatan(d.pdf_jabatan || 'Kepala Bidang SDA dan Linmas');
-          setPdfNama(d.pdf_nama || 'Erry Setiyoso Birowo, SP');
-          setPdfPangkat(d.pdf_pangkat || 'Pembina');
-          setPdfNip(d.pdf_nip || '19751029 200212 1 008');
+          setPdfCategorySettings(d);
+          applyPdfCategorySettings('pedestrian', d);
 
           setKolJudul(d.kol_judul || 'LAPORAN PATROLI WILAYAH PEDESTRIAN');
           setKolSubjudul(d.kol_subjudul || 'SATGAS LINMAS PEDESTRIAN');
@@ -463,20 +477,30 @@ export const Pengaturan: React.FC = () => {
   const handleSavePdfSingleSettings = async () => {
     showLoad('Menyimpan...');
     try {
+      const values = {
+        judul: pdfJudul,
+        tujuan: pdfTujuan,
+        anggota: pdfAnggota,
+        pukul: pdfPukul,
+        jabatan: pdfJabatan,
+        nama: pdfNama,
+        pangkat: pdfPangkat,
+        nip: pdfNip,
+      };
+      const savedValues = Object.fromEntries(
+        Object.entries(values).map(([field, value]) => [
+          categoryPdfSettingKey(pdfSettingsCategory, field as keyof typeof values),
+          value,
+        ])
+      );
       const res = await apiPost('saveSettings', {
-        pdf_judul: pdfJudul,
-        pdf_tujuan: pdfTujuan,
-        pdf_anggota: pdfAnggota,
-        pdf_pukul: pdfPukul,
-        pdf_jabatan: pdfJabatan,
-        pdf_nama: pdfNama,
-        pdf_pangkat: pdfPangkat,
-        pdf_nip: pdfNip,
-        pdf_kop_aktif: 'false',
+        ...savedValues,
+        ...(pdfSettingsCategory === 'pedestrian' ? { pdf_kop_aktif: 'false' } : {}),
       });
       hideLoad();
       if (res.success) {
-        triggerToast('Pengaturan PDF Tunggal disimpan.', 'ok');
+        setPdfCategorySettings((previous) => ({ ...previous, ...savedValues }));
+        triggerToast(`Pengaturan PDF ${KATEGORI_LIST.find((item) => item.slug === pdfSettingsCategory)?.label || 'kategori'} disimpan.`, 'ok');
       } else {
         triggerToast(res.message || 'Gagal menyimpan.', 'er');
       }
@@ -782,6 +806,19 @@ export const Pengaturan: React.FC = () => {
           </div>
         </div>
         <div className={`p-4 flex-col gap-4 ${openPanels.pdfTunggal ? 'flex' : 'hidden'}`}>
+          <div className={SET_CARD_P4}>
+            <label className={FLBL} htmlFor="pdf-category-settings">Kategori laporan</label>
+            <select
+              id="pdf-category-settings"
+              className={FCTL}
+              value={pdfSettingsCategory}
+              onChange={(event) => handlePdfCategoryChange(event.target.value)}
+            >
+              {KATEGORI_LIST.map((category) => (
+                <option key={category.slug} value={category.slug}>{category.label}</option>
+              ))}
+            </select>
+          </div>
           <div className={SET_CARD_P4}>
             <p className="mb-1.5 text-[.65rem] font-bold text-blue">
               <Heading className="w-4 h-4 inline-block align-middle mr-1" /> Header Laporan

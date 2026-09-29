@@ -1,12 +1,9 @@
 import React from 'react';
+import { ExternalLink } from 'lucide-react';
 import { useAuth } from '../App';
 import { InputSkeleton } from '../components/SkeletonPages';
 
-/**
- * Menu Input Laporan ditampilkan sebagai iframe penuh dari aplikasi
- * pelaporan (laporsipedas.vercel.app). URL diambil dari environment
- * variable `IFRAME_LAPOR_URL` agar tidak ada yang hardcode.
- */
+/** URL aplikasi pelaporan terpisah; dibuka langsung agar tidak diblokir sebagai iframe. */
 const IFRAME_URL: string = process.env.IFRAME_LAPOR_URL || '';
 
 const InputLaporanContent: React.FC = () => {
@@ -26,13 +23,17 @@ const InputLaporanContent: React.FC = () => {
   }
 
   return (
-    <iframe
-      src={IFRAME_URL}
-      title="Input Laporan SIPEDAS"
-      className="block h-[calc(100vh-120px)] w-full rounded-xl border-none bg-white"
-      allow="camera; geolocation; microphone"
-      allowFullScreen
-    />
+    <div className="flex min-h-[calc(100vh-160px)] items-center justify-center">
+      <a
+        href={IFRAME_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2 rounded-md bg-blue px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-blueh"
+      >
+        <ExternalLink className="h-4 w-4" />
+        Buka Form Input SIPEDAS
+      </a>
+    </div>
   );
 };
 

@@ -995,15 +995,26 @@ export function generateLaporanHtml(payload: any): any {
 
       html += `<tr><td class="lbl">Uraian Laporan</td><td class="sep">:</td><td class="val uraian-cell">${uraianHtml}</td></tr>`;
     } else {
-      // Non-Pedestrian: hanya Hari/Tanggal (1 baris), No SPT, Alamat/Lokasi, Keterangan
+      // Non-Pedestrian: tampilkan isi template tambahan hanya jika dikonfigurasi.
       html += `<tr><td class="lbl">Hari / Tanggal</td><td class="sep">:</td><td class="val">${esc(payload.hari || '')}, ${esc(payload.tanggal || '')}</td></tr>` +
         `<tr><td class="lbl">Nomor SPT</td><td class="sep">:</td><td class="val">${esc(payload.nomorSpt || '—')}</td></tr>` +
-        `<tr><td class="lbl">Alamat / Lokasi</td><td class="sep">:</td><td class="val">${esc(payload.lokasi || '—')}</td></tr>` +
-        `<tr><td class="lbl">Keterangan Kegiatan</td><td class="sep">:</td><td class="val uraian-cell">${uraianHtml}</td></tr>`;
+        `<tr><td class="lbl">Alamat / Lokasi</td><td class="sep">:</td><td class="val">${esc(payload.lokasi || '—')}</td></tr>`;
+
+      if (payload.tujuan) {
+        html += `<tr><td class="lbl">Tujuan Kegiatan</td><td class="sep">:</td><td class="val">${esc(payload.tujuan)}</td></tr>`;
+      }
+      if (payload.anggota) {
+        html += `<tr><td class="lbl">Anggota</td><td class="sep">:</td><td class="val">${esc(payload.anggota)}</td></tr>`;
+      }
+      if (payload.pukul) {
+        html += `<tr><td class="lbl">Pukul</td><td class="sep">:</td><td class="val">${esc(payload.pukul)}</td></tr>`;
+      }
+
+      html += `<tr><td class="lbl">Keterangan Kegiatan</td><td class="sep">:</td><td class="val uraian-cell">${uraianHtml}</td></tr>`;
     }
 
     html += '</table><p class="lamp-judul">LAMPIRAN DOKUMENTASI</p>' + fotoHtml +
-      `<div class="ttd-wrap"><div class="ttd-box"><p>Ponorogo, ${esc(payload.tglSurat || '')}</p>`; +
+      `<div class="ttd-wrap"><div class="ttd-box"><p>Ponorogo, ${esc(payload.tglSurat || '')}</p>` +
       `<p>${esc(payload.jabatanTtd || 'Kepala Bidang SDA dan Linmas')}</p>` +
       '<div class="ttd-space"></div>' +
       `<p class="ttd-nama">${esc(payload.namaTtd || 'Erry Setiyoso Birowo, SP')}</p>` +

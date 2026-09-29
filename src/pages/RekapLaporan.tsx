@@ -47,6 +47,7 @@ import { CustomDropdown } from '../components/common/CustomDropdown';
 // Foto embed + DOCX
 import { prepareHtmlWithEmbeddedFotos } from '../utils/foto-embed';
 import { generateDocxLaporan } from '../utils/docx-generator';
+import { getCategoryPdfSettings } from '../utils/kategori';
 
 /* ── Tailwind class mappings (design system — lama: dashboard/ui/responsive/peta-shell css) ── */
 const PANEL = 'mb-3 max-w-full overflow-hidden rounded-2xl border-[1.5px] border-border bg-card shadow-[var(--sh)] transition-all hover:shadow-[var(--shl)] min-[769px]:overflow-x-auto max-md:landscape:overflow-x-auto';
@@ -612,19 +613,17 @@ export const RekapLaporan: React.FC<RekapLaporanProps> = ({ kategori }) => {
     try {
       const res = await apiGet('getSettings');
       const settings: Settings = res.success ? res.data : {};
+      const rowKat = row.kategori || currentCategory;
+      const pdfSettings = getCategoryPdfSettings(settings, rowKat);
 
       const now = new Date();
       setPdfHari(row.hari || '');
       setPdfTanggal(row.tanggal || '');
-      setPdfTujuan(
-        settings.pdf_tujuan || 'Melaksanakan Monitoring Dan Pengamanan Area Wisata Pedestrian'
-      );
+      setPdfTujuan(pdfSettings.tujuan);
       setPdfNoSpt(row.noSpt || '');
       setPdfLokasi(row.lokasi || '');
-      setPdfAnggota(
-        settings.pdf_anggota || 'Regu Pedestrian, Anggota Bidang Linmas, Satpol PP'
-      );
-      setPdfPukul(settings.pdf_pukul || '16.00 – 00.00 WIB');
+      setPdfAnggota(pdfSettings.anggota);
+      setPdfPukul(pdfSettings.pukul);
 
       const idn = row.identitas || '';
       const isNihil = !idn.trim() || idn.trim().toUpperCase() === 'NIHIL';
@@ -633,15 +632,12 @@ export const RekapLaporan: React.FC<RekapLaporanProps> = ({ kategori }) => {
       setPdfTglSurat(tglIDStr(now));
 
       // peTTD
-      setPdfJabatan(settings.pdf_jabatan || 'Kepala Bidang SDA dan Linmas');
-      setPdfNama(settings.pdf_nama || 'Erry Setiyoso Birowo, SP');
-      setPdfPangkat(settings.pdf_pangkat || 'Pembina');
-      setPdfNip(settings.pdf_nip || '19751029 200212 1 008');
+      setPdfJabatan(pdfSettings.jabatan);
+      setPdfNama(pdfSettings.nama);
+      setPdfPangkat(pdfSettings.pangkat);
+      setPdfNip(pdfSettings.nip);
 
-      const rowKat = row.kategori || currentCategory;
-      const isRowPedestrian = !rowKat || rowKat === 'pedestrian';
-      const defaultJudul = judulLaporanDefault(rowKat);
-      const judulAwal = isRowPedestrian ? (settings.pdf_judul || defaultJudul) : defaultJudul;
+      const judulAwal = pdfSettings.judul;
       setPdfJudul(judulAwal);
 
       setShowPdfTtdBox(false);
@@ -660,13 +656,13 @@ export const RekapLaporan: React.FC<RekapLaporanProps> = ({ kategori }) => {
         row,
         {
           pdf_judul:   judulAwal,
-          pdf_tujuan:  settings.pdf_tujuan  || 'Melaksanakan Monitoring Dan Pengamanan Area Wisata Pedestrian',
-          pdf_anggota: settings.pdf_anggota || 'Regu Pedestrian, Anggota Bidang Linmas, Satpol PP',
-          pdf_pukul:   settings.pdf_pukul   || '16.00 – 00.00 WIB',
-          pdf_jabatan: settings.pdf_jabatan || 'Kepala Bidang SDA dan Linmas',
-          pdf_nama:    settings.pdf_nama    || 'Erry Setiyoso Birowo, SP',
-          pdf_pangkat: settings.pdf_pangkat || 'Pembina',
-          pdf_nip:     settings.pdf_nip     || '19751029 200212 1 008',
+          pdf_tujuan:  pdfSettings.tujuan,
+          pdf_anggota: pdfSettings.anggota,
+          pdf_pukul:   pdfSettings.pukul,
+          pdf_jabatan: pdfSettings.jabatan,
+          pdf_nama:    pdfSettings.nama,
+          pdf_pangkat: pdfSettings.pangkat,
+          pdf_nip:     pdfSettings.nip,
         },
         undefined,
         {
